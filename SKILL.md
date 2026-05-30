@@ -57,6 +57,58 @@ planning. Interactive brainstorming remains the right tool for normal, collabora
 not here.
 </CRITICAL>
 
+## Pipeline at a glance
+
+```mermaid
+flowchart TD
+    Start(["/lfg feature description"]) --> S0
+
+    S0["Step 0 · Isolate<br/>using-git-worktrees"] --> G0{Branch / worktree<br/>exists?}
+    G0 -->|no| S0
+    G0 -->|yes| S1["Step 1 · Recall<br/>search docs/solutions/"]
+
+    S1 --> S2["Step 2 · Plan<br/>writing-plans"]
+    S2 --> G2{Plan file<br/>written?}
+    G2 -->|no| S2
+    G2 -->|yes| S3["Step 3 · Implement<br/>subagent-driven-development + TDD"]
+
+    S3 --> G3{Code changed<br/>+ tests exist?}
+    G3 -->|no| S3
+    G3 -->|yes| S4["Step 4 · Review + autofix<br/>requesting / receiving-code-review"]
+
+    S4 --> S5["Step 5 · Verify<br/>verification-before-completion"]
+    S5 --> G5{Tests + app<br/>green?}
+    G5 -->|red| DBG["systematic-debugging<br/>fix root cause"]
+    DBG --> S5
+    G5 -->|green| S6["Step 6 · Ship<br/>finishing-a-development-branch → open PR"]
+
+    S6 --> G6{PR exists<br/>or branch pushed?}
+    G6 -->|no| S6
+    G6 -->|yes| S7["Step 7 · CI watch + autofix<br/>fix-pipeline · max 3 cycles"]
+
+    S7 --> G7{CI green?}
+    G7 -->|red, &lt;3 cycles| S7
+    G7 -->|red, 3 exhausted| RES["Record residual<br/>on PR body"]
+    G7 -->|green| S8
+    RES --> S8["Step 8 · Compound<br/>document learning → docs/solutions/"]
+
+    S8 --> Done(["Step 9 · DONE<br/>promise + summary"])
+
+    DBG -.on any gate failure.-> DBG
+
+    classDef gate fill:#fff3cd,stroke:#d39e00,color:#000;
+    classDef step fill:#e7f1ff,stroke:#0d6efd,color:#000;
+    classDef terminal fill:#d1e7dd,stroke:#198754,color:#000;
+    classDef fix fill:#f8d7da,stroke:#dc3545,color:#000;
+    class G0,G2,G3,G5,G6,G7 gate;
+    class S0,S1,S2,S3,S4,S5,S6,S7,S8 step;
+    class Start,Done terminal;
+    class DBG,RES fix;
+```
+
+The autopilot never blocks on a question: every gate either advances, retries, or records a
+durable residual and moves on. Diagnose-on-failure (`systematic-debugging`) can fire at any gate.
+
 ## The Pipeline
 
 ### Step 0 — Isolate
