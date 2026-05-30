@@ -63,7 +63,7 @@ plugin or skill library**. Copy the folder anywhere and it runs.
 ## Layout
 
 ```
-lfg/
+skills/lfg/
 ├── SKILL.md            # the orchestrator pipeline (Steps 0–9)
 └── references/         # 13 bundled technique skills, each in its own folder
     ├── using-git-worktrees/
@@ -84,17 +84,13 @@ lfg/
 Each step in `SKILL.md` reads the relevant `references/<name>/SKILL.md` and follows it — no `Skill`
 tool, no `superpowers:` namespace required.
 
-## Install
-
-Drop the `lfg/` folder into your agent's skills directory, e.g.:
+## Installation
 
 ```bash
-# Claude Code
-git clone https://github.com/alexanderop/lfg-skill ~/.claude/skills/lfg
-
-# or any harness that loads skills from a folder
-cp -R lfg /path/to/your/skills/
+npx skills add https://github.com/alexanderop/lfg-skill --skill lfg
 ```
+
+Or copy `skills/lfg/` into your project's `.claude/skills/` folder.
 
 Then invoke `/lfg <feature description>`.
 
